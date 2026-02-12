@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Russisch Vokabeltrainer: себя</title>
+    <style>
+        :root {
+            --primary-green: #2d5a27;
+            --light-green: #eef5ee;
+            --accent-green: #4caf50;
+            --hover-green: #388e3c;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            --text-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-green);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--primary-green);
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .progress {
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: var(--primary-green);
+            font-size: 1.1rem;
+        }
+
+        /* Flashcard Styles */
+        .flashcard-container {
+            perspective: 1000px;
+            width: 100%;
+            height: 300px;
+            cursor: pointer;
+            margin-bottom: 30px;
+        }
+
+        .flashcard {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            box-shadow: var(--card-shadow);
+            border-radius: 15px;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            border-radius: 15px;
+            background: white;
+            border: 2px solid var(--accent-green);
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background-color: #f9fff9;
+        }
+
+        .vokabel-text {
+            font-weight: bold;
+            margin: 0;
+            word-wrap: break-word;
+            max-width: 100%;
+        }
+
+        .russian {
+            color: var(--primary-green);
+        }
+
+        .note {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        /* Controls */
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .nav-buttons {
+            grid-column: span 2;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: var(--accent-green);
+            color: white;
+            transition: background 0.2s, transform 0.1s;
+            font-weight: bold;
+            flex: 1;
+        }
+
+        button:hover {
+            background-color: var(--hover-green);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background-color: var(--primary-green);
+        }
+
+        /* Keyboard Info */
+        .keyboard-hint {
+            margin-top: 25px;
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        @media (max-width: 480px) {
+            .flashcard-container { height: 250px; }
+            h1 { font-size: 1.2rem; }
+            .vokabel-text { font-size: 1.2rem !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Lernkartei: Reflexivpronomen</h1>
+    
+    <div class="progress" id="progress">1 / 37</div>
+
+    <div class="flashcard-container" id="card-container" onclick="flipCard()">
+        <div class="flashcard" id="card-inner">
+            <div class="card-face card-front">
+                <div class="vokabel-text russian" id="text-front">Загрузка...</div>
+                <div class="note" id="note-front"></div>
+            </div>
+            <div class="card-face card-back">
+                <div class="vokabel-text" id="text-back">Laden...</div>
+                <div class="note" id="note-back"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="nav-buttons">
+            <button onclick="prevCard()">← Vorherige</button>
+            <button onclick="nextCard()">Nächste →</button>
+        </div>
+        <button class="btn-secondary" onclick="shuffleCards()">Mischen</button>
+        <button class="btn-secondary" onclick="resetToStart()">An den Anfang</button>
+    </div>
+
+    <div class="keyboard-hint">
+        Tastatur: Pfeiltasten für Navigation | Leertaste/Enter zum Umdrehen | Pos1 für Anfang
+    </div>
+</div>
+
+<script>
+    // Vokabeldaten
+    const originalData = [
+        ["себя́", "sich / selbst"],
+        ["себе́", "sich / für sich", "", "(Dativ/Präpositiv)"],
+        ["собо́й", "sich / mit sich", "", "(Instrumental)"],
+        ["чу́вствовать / почу́вствовать себя́", "sich fühlen"],
+        ["ви́деть / уви́деть себя́", "sich sehen"],
+        ["покупа́ть / купи́ть себе́", "sich (etwas) kaufen"],
+        ["говори́ть / сказа́ть о себе́", "über sich sprechen"],
+        ["приглаша́ть / пригласи́ть к себе́", "zu sich einladen"],
+        ["брать / взять с собо́й", "mitnehmen / dabei haben"],
+        ["выходи́ть / вы́йти из себя́", "die Beherrschung verlieren / aus der Haut fahren"],
+        ["вести́ / повести́ себя́", "sich benehmen"],
+        ["дава́ть / дать себе́ сло́во", "sich selbst versprechen / schwören"],
+        ["стоя́ть / постоя́ть за себя́", "für sich einstehen / sich wehren"],
+        ["следи́ть / проследи́ть за собо́й", "auf sich achten / sich pflegen"],
+        ["чита́ть / прочита́ть про себя́", "leise / für sich lesen"],
+        ["представля́ть / предста́вить собо́й", "darstellen / verkörpern"],
+        ["уходи́ть / уйти́ в себя́", "sich in sich selbst zurückziehen"],
+        ["встреча́ться / встре́титься", "sich treffen"],
+        ["умыва́ться / умы́ться", "sich waschen"],
+        ["одева́ться / оде́ться", "sich anziehen"],
+        ["гото́виться / подгото́виться", "sich vorbereiten"],
+        ["ве́рить / пове́рить в себя́", "an sich selbst glauben"],
+        ["интересова́ться / заинтересова́ться", "sich interessieren"],
+        ["приходи́ть / прийти́ в себя́", "zu sich kommen", "", "Bewusstsein wiedererlangen"],
+        ["ничего́ себе́!", "Wahnsinn! / Oha!"],
+        ["са́мо собо́й", "selbstverständlich"],
+        ["на себя́", "ziehen", "", "(an Türen)"],
+        ["от себя́", "drücken", "", "(an Türen)"],
+        ["зе́ркало", "Spiegel"],
+        ["сло́во", "Wort / Versprechen"],
+        ["пло́хо", "schlecht"],
+        ["хорошо́", "gut"],
+        ["норма́льно", "normal"],
+        ["отли́чно", "ausgezeichnet"],
+        ["уста́лый", "müde"],
+        ["счастли́вый", "glücklich"],
+        ["бо́дрый", "munter / fit"]
+    ];
+
+    let cards = originalData.map(item => ({
+        front: item[0],
+        back: item[1],
+        noteFront: item[2] || "",
+        noteBack: item[3] || ""
+    }));
+
+    let currentIndex = 0;
+    let isFlipped = false;
+
+    // Elemente
+    const cardInner = document.getElementById('card-inner');
+    const textFront = document.getElementById('text-front');
+    const textBack = document.getElementById('text-back');
+    const noteFront = document.getElementById('note-front');
+    const noteBack = document.getElementById('note-back');
+    const progress = document.getElementById('progress');
+
+    function updateCard() {
+        isFlipped = false;
+        cardInner.classList.remove('flipped');
+        
+        const card = cards[currentIndex];
+        
+        textFront.innerText = card.front;
+        textBack.innerText = card.back;
+        noteFront.innerText = card.noteFront;
+        noteBack.innerText = card.noteBack;
+
+        // Dynamische Schriftgröße
+        adjustFontSize(textFront, card.front);
+        adjustFontSize(textBack, card.back);
+
+        progress.innerText = `${currentIndex + 1} / ${cards.length}`;
+    }
+
+    function adjustFontSize(element, text) {
+        let size = 2; // Default 2rem
+        if (text.length > 30) size = 1.2;
+        else if (text.length > 15) size = 1.5;
+        element.style.fontSize = size + "rem";
+    }
+
+    function flipCard() {
+        isFlipped = !isFlipped;
+        cardInner.classList.toggle('flipped');
+    }
+
+    function nextCard() {
+        if (currentIndex < cards.length - 1) {
+            currentIndex++;
+            updateCard();
+        }
+    }
+
+    function prevCard() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            updateCard();
+        }
+    }
+
+    function shuffleCards() {
+        for (let i = cards.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [cards[i], cards[j]] = [cards[j], cards[i]];
+        }
+        currentIndex = 0;
+        updateCard();
+    }
+
+    function resetToStart() {
+        currentIndex = 0;
+        updateCard();
+    }
+
+    // Tastatursteuerung
+    document.addEventListener('keydown', (e) => {
+        if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault(); // Verhindert Scrollen bei Leertaste
+            flipCard();
+        } else if (e.key === 'ArrowRight') {
+            nextCard();
+        } else if (e.key === 'ArrowLeft') {
+            prevCard();
+        } else if (e.key === 'Home') {
+            resetToStart();
+        }
+    });
+
+    // Initialisierung
+    updateCard();
+</script>
+
+</body>
+</html>
