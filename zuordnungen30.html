@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Russisch Idiome: Das Pronomen себя</title>
+    <!-- Polyfill für Drag and Drop auf Touch-Geräten -->
+    <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch@1.3.1/DragDropTouch.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --success-bg: #d4edda;
+            --success-border: #28a745;
+            --error-bg: #f8d7da;
+            --error-border: #dc3545;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-wrapper {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+
+        h1 { text-align: center; border-bottom: 3px solid var(--accent-color); padding-bottom: 10px; }
+        
+        .intro-box {
+            background: #eef7ff;
+            border-left: 6px solid var(--accent-color);
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+
+        .task-card {
+            border: 2px solid #e0e6ed;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .task-card.is-correct { background-color: var(--success-bg); border-color: var(--success-border); }
+        .task-card.is-incorrect { background-color: var(--error-bg); border-color: var(--error-border); }
+
+        .task-title {
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            display: block;
+            font-size: 1.1em;
+        }
+
+        /* Interaktive Elemente */
+        .drag-pool {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+            min-height: 45px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px dashed #ccc;
+        }
+
+        .draggable {
+            background: white;
+            border: 2px solid var(--accent-color);
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: move;
+            font-size: 0.95em;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .dropzone {
+            display: inline-block;
+            min-width: 130px;
+            height: 32px;
+            border-bottom: 2px solid #999;
+            vertical-align: middle;
+            margin: 0 5px;
+            text-align: center;
+        }
+
+        select {
+            padding: 6px;
+            border-radius: 4px;
+            border: 2px solid #ccc;
+            font-size: 1em;
+            margin: 5px 0;
+        }
+
+        .option-label {
+            display: block;
+            padding: 10px;
+            margin: 5px 0;
+            background: #f1f3f5;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        /* Buttons */
+        .button-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .btn-check { background: #27ae60; color: white; }
+        .btn-reset { background: #95a5a6; color: white; }
+        .btn-sol { background: #3498db; color: white; }
+        button:hover { opacity: 0.9; }
+
+        @media (max-width: 600px) {
+            .main-wrapper { padding: 15px; }
+            .button-group { flex-direction: column; }
+            button { width: 100%; }
+            .dropzone { min-width: 100px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-wrapper">
+    <h1>Russische Idiome mit себя</h1>
+
+    <div class="intro-box">
+        <p>Im Russischen gibt es viele feste Wendungen mit dem Pronomen <strong>себя</strong>, die oft nicht wörtlich übersetzt werden können. In diesen Aufgaben lernst du die wichtigsten Ausdrücke und ihre Bedeutung im Kontext kennen.</p>
+    </div>
+
+    <!-- Aufgaben 1-4: Matching Drag & Drop -->
+    <div class="task-card" id="task1">
+        <span class="task-title">1. Zuordnung: Grundlegende Idiome</span>
+        <div class="drag-pool">
+            <div class="draggable" draggable="true" id="d1-1" data-ans="z1-1">Wahnsinn!</div>
+            <div class="draggable" draggable="true" id="d1-2" data-ans="z1-2">Sich zusammenreißen</div>
+            <div class="draggable" draggable="true" id="d1-3" data-ans="z1-3">Leise lesen</div>
+        </div>
+        <p>Ничего себе! — <span class="dropzone" id="z1-1"></span></p>
+        <p>Взять себя в руки — <span class="dropzone" id="z1-2"></span></p>
+        <p>Читать про себя — <span class="dropzone" id="z1-3"></span></p>
+        <div class="button-group">
+            <button class="btn-check" onclick="checkDrag('task1')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task1')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolDrag('task1')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <div class="task-card" id="task2">
+        <span class="task-title">2. Zuordnung: Verhalten und Gefühl</span>
+        <div class="drag-pool">
+            <div class="draggable" draggable="true" id="d2-1" data-ans="z2-1">Sich benehmen</div>
+            <div class="draggable" draggable="true" id="d2-2" data-ans="z2-2">Sich fühlen</div>
+            <div class="draggable" draggable="true" id="d2-3" data-ans="z2-3">Zu sich kommen</div>
+        </div>
+        <p>Вести себя — <span class="dropzone" id="z2-1"></span></p>
+        <p>Чувствовать себя — <span class="dropzone" id="z2-2"></span></p>
+        <p>Прийти в себя — <span class="dropzone" id="z2-3"></span></p>
+        <div class="button-group">
+            <button class="btn-check" onclick="checkDrag('task2')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task2')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolDrag('task2')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <div class="task-card" id="task3">
+        <span class="task-title">3. Zuordnung: Emotionen</span>
+        <div class="drag-pool">
+            <div class="draggable" draggable="true" id="d3-1" data-ans="z3-1">Aus der Haut fahren</div>
+            <div class="draggable" draggable="true" id="d3-2" data-ans="z3-2">Außer sich sein</div>
+            <div class="draggable" draggable="true" id="d3-3" data-ans="z3-3">Selbstverständlich</div>
+        </div>
+        <p>Выйти из себя — <span class="dropzone" id="z3-1"></span></p>
+        <p>Быть вне себя — <span class="dropzone" id="z3-2"></span></p>
+        <p>Само собой — <span class="dropzone" id="z3-3"></span></p>
+        <div class="button-group">
+            <button class="btn-check" onclick="checkDrag('task3')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task3')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolDrag('task3')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <div class="task-card" id="task4">
+        <span class="task-title">4. Zuordnung: Charakter</span>
+        <div class="drag-pool">
+            <div class="draggable" draggable="true" id="d4-1" data-ans="z4-1">Für sich einstehen</div>
+            <div class="draggable" draggable="true" id="d4-2" data-ans="z4-2">In sich gehen</div>
+            <div class="draggable" draggable="true" id="d4-3" data-ans="z4-3">Darstellen</div>
+        </div>
+        <p>Постоять за себя — <span class="dropzone" id="z4-1"></span></p>
+        <p>Уйти в себя — <span class="dropzone" id="z4-2"></span></p>
+        <p>Представлять собой — <span class="dropzone" id="z4-3"></span></p>
+        <div class="button-group">
+            <button class="btn-check" onclick="checkDrag('task4')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task4')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolDrag('task4')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgaben 5-8: Multiple Choice Bedeutung -->
+    <div class="task-card" id="task5">
+        <span class="task-title">5. Multiple Choice: Was sagt man bei einer großen Überraschung?</span>
+        <label class="option-label"><input type="radio" name="q5" value="0"> Вести себя!</label>
+        <label class="option-label"><input type="radio" name="q5" value="1" data-correct="true"> Ничего себе!</label>
+        <label class="option-label"><input type="radio" name="q5" value="2"> Читать про себя!</label>
+        <div class="button-group">
+            <button class="btn-check" onclick="checkRadio('task5')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task5')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolRadio('task5')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <div class="task-card" id="task6">
+        <span class="task-title">6. Multiple Choice: Ein Kind schreit im Restaurant. Was sagt die Mutter?</span>
+        <label class="option-label"><input type="radio" name="q6" value="0" data-correct="true"> Ты не умеешь вести себя!</label>
+        <label class="option-label"><input type="radio" name="q6" value="1"> Ты не умеешь прийти в себя!</label>
+        <div class="button-group">
+            <button class="btn-check" onclick="checkRadio('task6')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task6')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolRadio('task6')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <div class="task-card" id="task7">
+        <span class="task-title">7. Multiple Choice: Was bedeutet „Выйти из себя“?</span>
+        <label class="option-label"><input type="radio" name="q7" value="0"> Das Haus verlassen.</label>
+        <label class="option-label"><input type="radio" name="q7" value="1" data-correct="true"> Die Beherrschung vor Wut verlieren.</label>
+        <div class="button-group">
+            <button class="btn-check" onclick="checkRadio('task7')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task7')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolRadio('task7')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <div class="task-card" id="task8">
+        <span class="task-title">8. Multiple Choice: Wie sagt man „Selbstverständlich“ auf Russisch?</span>
+        <label class="option-label"><input type="radio" name="q8" value="0"> Читать про себя.</label>
+        <label class="option-label"><input type="radio" name="q8" value="1" data-correct="true"> Само собой.</label>
+        <div class="button-group">
+            <button class="btn-check" onclick="checkRadio('task8')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task8')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolRadio('task8')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgaben 9-12: Kontext Dropdown -->
+    <div class="task-card" id="task9">
+        <span class="task-title">9. Kontext: Du bist krank.</span>
+        <p>Я плохо <select data-correct="чувствую себя">
+            <option value="">--bitte wählen--</option>
+            <option value="чувствую себя">чувствую себя</option>
+            <option value="пришёл в себя">пришёл в себя</option>
+        </select>, у меня болит голова.</p>
+        <div class="button-group">
+            <button class="btn-check" onclick="checkSelect('task9')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task9')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolSelect('task9')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <div class="task-card" id="task10">
+        <span class="task-title">10. Kontext: In der Bibliothek.</span>
+        <p>В библиотеке нужно <select data-correct="читать про себя">
+            <option value="">--bitte wählen--</option>
+            <option value="читать вслух">читать вслух</option>
+            <option value="читать про себя">читать про себя</option>
+        </select>, чтобы не мешать другим.</p>
+        <div class="button-group">
+            <button class="btn-check" onclick="checkSelect('task10')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task10')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolSelect('task10')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <div class="task-card" id="task11">
+        <span class="task-title">11. Kontext: Jemand beleidigt dich.</span>
+        <p>Ты должен <select data-correct="постоять за себя">
+            <option value="">--bitte wählen--</option>
+            <option value="постоять за себя">постоять за себя</option>
+            <option value="уйти в себя">уйти в себя</option>
+        </select> und dich wehren!</p>
+        <div class="button-group">
+            <button class="btn-check" onclick="checkSelect('task11')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task11')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolSelect('task11')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <div class="task-card" id="task12">
+        <span class="task-title">12. Kontext: Nach einem Schock.</span>
+        <p>Он долго не мог <select data-correct="прийти в себя">
+            <option value="">--bitte wählen--</option>
+            <option value="выйти из себя">выйти из себя</option>
+            <option value="прийти в себя">прийти в себя</option>
+        </select> nach dem Unfall.</p>
+        <div class="button-group">
+            <button class="btn-check" onclick="checkSelect('task12')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task12')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolSelect('task12')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Drag & Drop Logic
+    let draggedItem = null;
+
+    document.querySelectorAll('.draggable').forEach(item => {
+        item.addEventListener('dragstart', function(e) {
+            draggedItem = this;
+            e.dataTransfer.setData('text/plain', this.id);
+        });
+    });
+
+    document.querySelectorAll('.dropzone, .drag-pool').forEach(zone => {
+        zone.addEventListener('dragover', e => e.preventDefault());
+        zone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            if (this.classList.contains('dropzone') && this.childNodes.length > 0) return;
+            this.appendChild(draggedItem);
+        });
+    });
+
+    // Validierung: Drag & Drop
+    function checkDrag(id) {
+        const card = document.getElementById(id);
+        const zones = card.querySelectorAll('.dropzone');
+        let allCorrect = true;
+        zones.forEach(z => {
+            if (z.firstChild && z.firstChild.getAttribute('data-ans') === z.id) {
+                z.style.borderBottomColor = 'var(--success-border)';
+            } else {
+                z.style.borderBottomColor = 'var(--error-border)';
+                allCorrect = false;
+            }
+        });
+        card.className = allCorrect ? 'task-card is-correct' : 'task-card is-incorrect';
+    }
+
+    function showSolDrag(id) {
+        const card = document.getElementById(id);
+        const draggables = card.querySelectorAll('.draggable');
+        draggables.forEach(d => {
+            const target = document.getElementById(d.getAttribute('data-ans'));
+            target.appendChild(d);
+        });
+        checkDrag(id);
+    }
+
+    // Validierung: Radio
+    function checkRadio(id) {
+        const card = document.getElementById(id);
+        const selected = card.querySelector('input[type="radio"]:checked');
+        if (selected && selected.hasAttribute('data-correct')) {
+            card.className = 'task-card is-correct';
+        } else {
+            card.className = 'task-card is-incorrect';
+        }
+    }
+
+    function showSolRadio(id) {
+        const card = document.getElementById(id);
+        card.querySelector('input[data-correct]').checked = true;
+        checkRadio(id);
+    }
+
+    // Validierung: Select
+    function checkSelect(id) {
+        const card = document.getElementById(id);
+        const sel = card.querySelector('select');
+        if (sel.value === sel.getAttribute('data-correct')) {
+            card.className = 'task-card is-correct';
+        } else {
+            card.className = 'task-card is-incorrect';
+        }
+    }
+
+    function showSolSelect(id) {
+        const card = document.getElementById(id);
+        const sel = card.querySelector('select');
+        sel.value = sel.getAttribute('data-correct');
+        checkSelect(id);
+    }
+
+    // Zurücksetzen
+    function resetTask(id) {
+        const card = document.getElementById(id);
+        card.className = 'task-card';
+        
+        // Selects
+        const sel = card.querySelector('select');
+        if (sel) sel.value = "";
+
+        // Radios
+        const radios = card.querySelectorAll('input[type="radio"]');
+        radios.forEach(r => r.checked = false);
+
+        // Drag & Drop
+        const zones = card.querySelectorAll('.dropzone');
+        const pool = card.querySelector('.drag-pool');
+        zones.forEach(z => {
+            z.style.borderBottomColor = '#999';
+            while (z.firstChild) pool.appendChild(z.firstChild);
+        });
+    }
+</script>
+
+</body>
+</html>
