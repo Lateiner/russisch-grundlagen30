@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satzbau-Training: Das Pronomen себя</title>
+    <!-- Polyfill für Drag and Drop auf Touch-Geräten -->
+    <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch@1.3.1/DragDropTouch.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --error-color: #e74c3c;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --border-color: #dcdde1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+
+        h1 { text-align: center; color: var(--primary-color); border-bottom: 3px solid var(--accent-color); padding-bottom: 10px; }
+        
+        .intro-box {
+            background: #eef7ff;
+            border-left: 6px solid var(--accent-color);
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+
+        .task-card {
+            border: 2px solid var(--border-color);
+            padding: 20px;
+            margin-bottom: 40px;
+            border-radius: 12px;
+            background: #fff;
+            transition: border-color 0.3s;
+        }
+
+        .task-card.correct { border-color: var(--success-color); background-color: #f1f9f1; }
+        .task-card.incorrect { border-color: var(--error-color); background-color: #fff5f5; }
+
+        .task-title {
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            display: block;
+            font-size: 1.1em;
+        }
+
+        /* Wort-Pool und Drop-Zone */
+        .word-pool, .drop-zone {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 15px;
+            min-height: 60px;
+            border-radius: 8px;
+            align-items: center;
+        }
+
+        .word-pool {
+            background: #f8f9fa;
+            border: 1px dashed #ccc;
+            margin-bottom: 15px;
+        }
+
+        .drop-zone {
+            background: #fff;
+            border: 2px solid #eee;
+            margin-bottom: 10px;
+        }
+
+        .word-item {
+            background: white;
+            border: 2px solid var(--accent-color);
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            user-select: none;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.1s, background-color 0.2s;
+        }
+
+        .word-item:active { transform: scale(0.95); }
+        .word-item.dragging { opacity: 0.5; }
+
+        /* Buttons */
+        .button-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: opacity 0.2s;
+        }
+        .btn-check { background-color: var(--success-color); color: white; }
+        .btn-reset { background-color: #95a5a6; color: white; }
+        .btn-sol { background-color: var(--accent-color); color: white; }
+        button:hover { opacity: 0.9; }
+
+        .translation {
+            font-style: italic;
+            color: #666;
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 600px) {
+            .main-container { padding: 15px; }
+            .button-group { flex-direction: column; }
+            button { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <h1>Satzbau: Das Pronomen себя im Satz</h1>
+
+    <div class="intro-box">
+        <p>Im Russischen ist die Wortstellung flexibel, aber es gibt eine natürliche Ordnung: Das Pronomen <strong>себя</strong> steht meist direkt <strong>nach dem Verb</strong>. In diesen Übungen lernst du den Rhythmus russischer Sätze kennen.</p>
+        <p><strong>Anleitung:</strong> Klicke auf die Wörter oder ziehe sie in das untere Feld, um den Satz zu bilden.</p>
+    </div>
+
+    <!-- Container für 12 Aufgaben -->
+    <div id="tasks-wrapper"></div>
+
+</div>
+
+<script>
+    const taskData = [
+        { id: 1, words: ["Я", "чувствую", "себя", "хорошо"], trans: "Ich fühle mich gut." },
+        { id: 2, words: ["Она", "любит", "только", "себя"], trans: "Sie liebt nur sich selbst." },
+        { id: 3, words: ["Николай", "говорит", "о", "себе"], trans: "Nikolai spricht über sich." },
+        { id: 4, words: ["Мы", "взяли", "с", "собой", "деньги"], trans: "Wir haben Geld mitgenommen (dabei)." },
+        { id: 5, words: ["Они", "пригласили", "нас", "к", "себе"], trans: "Sie haben uns zu sich eingeladen." },
+        { id: 6, words: ["Маша", "купиte", "себе", "новое", "платье"], words: ["Маша", "купила", "себе", "новое", "платье"], trans: "Mascha hat sich ein neues Kleid gekauft." },
+        { id: 7, words: ["Вы", "должны", "верить", "в", "себя"], trans: "Ihr müsst an euch selbst glauben." },
+        { id: 8, words: ["Он", "вышел", "из", "себя", "от", "злости"], trans: "Er verlor vor Wut die Beherrschung." },
+        { id: 9, words: ["Она", "всегда", "следит", "за", "собой"], trans: "Sie achtet immer auf sich (ihr Äußeres)." },
+        { id: 10, words: ["Дети", "вели", "себя", "очень", "тихо"], trans: "Die Kinder benahmen sich sehr leise." },
+        { id: 11, words: ["Я", "даю", "себе", "слово", "учиться"], trans: "Ich verspreche mir selbst zu lernen." },
+        { id: 12, words: ["Он", "часто", "уходит", "в", "себя"], trans: "Er zieht sich oft in sich selbst zurück." }
+    ];
+
+    function shuffle(array) {
+        let currentIndex = array.length, randomIndex;
+        const newArray = [...array];
+        while (currentIndex != 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [newArray[currentIndex], newArray[randomIndex]] = [newArray[randomIndex], newArray[currentIndex]];
+        }
+        return newArray;
+    }
+
+    const wrapper = document.getElementById('tasks-wrapper');
+
+    taskData.forEach((task) => {
+        const shuffled = shuffle(task.words);
+        const card = document.createElement('div');
+        card.className = 'task-card';
+        card.id = `task-${task.id}`;
+        card.innerHTML = `
+            <span class="task-title">Aufgabe ${task.id}</span>
+            <div class="translation">„${task.trans}“</div>
+            <div class="word-pool" id="pool-${task.id}"></div>
+            <div class="drop-zone" id="zone-${task.id}"></div>
+            <div class="button-group">
+                <button class="btn-check" onclick="checkTask(${task.id})">Überprüfen</button>
+                <button class="btn-reset" onclick="resetTask(${task.id})">Zurücksetzen</button>
+                <button class="btn-sol" onclick="showSolution(${task.id})">Lösung anzeigen</button>
+            </div>
+        `;
+        wrapper.appendChild(card);
+
+        const pool = document.getElementById(`pool-${task.id}`);
+        shuffled.forEach((word, idx) => {
+            const wordEl = document.createElement('div');
+            wordEl.className = 'word-item';
+            wordEl.innerText = word;
+            wordEl.draggable = true;
+            wordEl.id = `word-${task.id}-${idx}`;
+            wordEl.onclick = () => moveWord(wordEl, task.id);
+            wordEl.ondragstart = (e) => {
+                e.dataTransfer.setData("text", e.target.id);
+                wordEl.classList.add('dragging');
+            };
+            wordEl.ondragend = () => wordEl.classList.remove('dragging');
+            pool.appendChild(wordEl);
+        });
+
+        // Drop Logic
+        const zone = document.getElementById(`zone-${task.id}`);
+        [pool, zone].forEach(target => {
+            target.ondragover = (e) => e.preventDefault();
+            target.ondrop = (e) => {
+                e.preventDefault();
+                const id = e.dataTransfer.getData("text");
+                const el = document.getElementById(id);
+                target.appendChild(el);
+            };
+        });
+    });
+
+    function moveWord(el, taskId) {
+        const pool = document.getElementById(`pool-${taskId}`);
+        const zone = document.getElementById(`zone-${taskId}`);
+        if (el.parentElement === pool) {
+            zone.appendChild(el);
+        } else {
+            pool.appendChild(el);
+        }
+        document.getElementById(`task-${taskId}`).classList.remove('correct', 'incorrect');
+    }
+
+    window.checkTask = function(taskId) {
+        const zone = document.getElementById(`zone-${taskId}`);
+        const card = document.getElementById(`task-${taskId}`);
+        const currentWords = Array.from(zone.children).map(el => el.innerText);
+        const correctWords = taskData.find(t => t.id === taskId).words;
+
+        if (JSON.stringify(currentWords) === JSON.stringify(correctWords)) {
+            card.classList.remove('incorrect');
+            card.classList.add('correct');
+        } else {
+            card.classList.remove('correct');
+            card.classList.add('incorrect');
+        }
+    };
+
+    window.resetTask = function(taskId) {
+        const pool = document.getElementById(`pool-${taskId}`);
+        const zone = document.getElementById(`zone-${taskId}`);
+        const card = document.getElementById(`task-${taskId}`);
+        
+        while (zone.firstChild) {
+            pool.appendChild(zone.firstChild);
+        }
+        card.classList.remove('correct', 'incorrect');
+    };
+
+    window.showSolution = function(taskId) {
+        const pool = document.getElementById(`pool-${taskId}`);
+        const zone = document.getElementById(`zone-${taskId}`);
+        const card = document.getElementById(`task-${taskId}`);
+        const correctWords = taskData.find(t => t.id === taskId).words;
+
+        // Reset first
+        resetTask(taskId);
+
+        // Move in correct order
+        correctWords.forEach(wordText => {
+            const wordEl = Array.from(pool.children).find(el => el.innerText === wordText);
+            if (wordEl) zone.appendChild(wordEl);
+        });
+        card.classList.add('correct');
+    };
+</script>
+
+</body>
+</html>
