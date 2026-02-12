@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Russisch im Alltag: Die Logik der Türschilder</title>
+    <!-- Polyfill für Drag and Drop auf Touch-Geräten -->
+    <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch@1.3.1/DragDropTouch.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --error-color: #e74c3c;
+            --bg-color: #f4f7f6;
+            --sign-blue: #003399;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 { text-align: center; color: var(--primary-color); }
+        h1 { border-bottom: 3px solid var(--accent-color); padding-bottom: 10px; }
+
+        .intro {
+            background: #eef7ff;
+            border-left: 6px solid var(--accent-color);
+            padding: 20px;
+            margin-bottom: 40px;
+            border-radius: 8px;
+        }
+
+        .task-card {
+            border: 2px solid #e0e6ed;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .task-card.correct { border-color: var(--success-color); background-color: #f1f9f1; }
+        .task-card.incorrect { border-color: var(--error-color); background-color: #fff5f5; }
+
+        .task-title {
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            display: block;
+            font-size: 1.1em;
+        }
+
+        /* Optik der russischen Türschilder */
+        .door-sign {
+            display: inline-block;
+            background-color: var(--sign-blue);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1.2em;
+            text-transform: uppercase;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            margin: 10px 0;
+            cursor: default;
+        }
+
+        .option-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .option-card {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .option-card:hover { border-color: var(--accent-color); background: #f0f7ff; }
+        .option-card.selected { border-color: var(--accent-color); background: #e1f5fe; box-shadow: inset 0 0 5px rgba(0,0,0,0.1); }
+
+        .arrow { font-size: 2em; margin-bottom: 5px; }
+
+        /* Drag and Drop */
+        .drag-pool {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 15px;
+            background: #f1f3f5;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            min-height: 50px;
+        }
+
+        .draggable {
+            background: var(--sign-blue);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: move;
+            font-weight: bold;
+        }
+
+        .dropzone {
+            display: inline-block;
+            width: 150px;
+            height: 40px;
+            border: 2px dashed #999;
+            border-radius: 4px;
+            vertical-align: middle;
+            text-align: center;
+            line-height: 40px;
+        }
+
+        /* Buttons */
+        .btn-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .btn-check { background-color: var(--success-color); color: white; }
+        .btn-reset { background-color: #95a5a6; color: white; }
+        .btn-sol { background-color: var(--accent-color); color: white; }
+        button:hover { opacity: 0.8; }
+
+        select { padding: 10px; border-radius: 6px; border: 2px solid #ccc; font-size: 1em; width: 100%; max-width: 300px; }
+
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            .option-grid { grid-template-columns: 1fr; }
+            .btn-group { flex-direction: column; }
+            button { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Russische Türschilder: Die Logik von себя</h1>
+
+    <div class="intro">
+        <p>In Russland triffst du an fast jeder Tür auf zwei Schilder. Sie nutzen das Pronomen <strong>себя</strong>, um die Bewegungsrichtung der Tür anzugeben:</p>
+        <ul>
+            <li><strong>НА СЕБЯ</strong> (Wörtlich: „auf sich zu“) &rarr; <strong>Ziehen</strong></li>
+            <li><strong>ОТ СЕБЯ</strong> (Wörtlich: „von sich weg“) &rarr; <strong>Drücken</strong></li>
+        </ul>
+    </div>
+
+    <!-- Aufgabe 1 -->
+    <div class="task-card" id="task1" data-type="option" data-ans="pull">
+        <span class="task-title">1. Du stehst vor einem Geschäft und willst die Tür aufziehen. Welches Schild suchst du?</span>
+        <div class="option-grid">
+            <div class="option-card" onclick="selectOption(this, 'push')">
+                <div class="door-sign">ОТ СЕБЯ</div>
+            </div>
+            <div class="option-card" onclick="selectOption(this, 'pull')">
+                <div class="door-sign">НА СЕБЯ</div>
+            </div>
+        </div>
+        <div class="btn-group">
+            <button class="btn-check" onclick="checkTask('task1')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task1')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolution('task1')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 2 -->
+    <div class="task-card" id="task2" data-type="option" data-ans="push">
+        <span class="task-title">2. Du möchtest eine Tür durch Drücken öffnen. Nach welchem Begriff hältst du Ausschau?</span>
+        <div class="option-grid">
+            <div class="option-card" onclick="selectOption(this, 'push')">
+                <div class="door-sign">ОТ СЕБЯ</div>
+            </div>
+            <div class="option-card" onclick="selectOption(this, 'pull')">
+                <div class="door-sign">НА СЕБЯ</div>
+            </div>
+        </div>
+        <div class="btn-group">
+            <button class="btn-check" onclick="checkTask('task2')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task2')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolution('task2')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 3 -->
+    <div class="task-card" id="task3" data-type="option" data-ans="action-pull">
+        <span class="task-title">3. Auf dem Schild steht <span class="door-sign" style="font-size: 0.9em;">НА СЕБЯ</span>. Was tust du?</span>
+        <div class="option-grid">
+            <div class="option-card" onclick="selectOption(this, 'action-pull')">
+                <div class="arrow">&darr;</div>
+                <strong>Ziehen</strong>
+            </div>
+            <div class="option-card" onclick="selectOption(this, 'action-push')">
+                <div class="arrow">&uarr;</div>
+                <strong>Drücken</strong>
+            </div>
+        </div>
+        <div class="btn-group">
+            <button class="btn-check" onclick="checkTask('task3')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task3')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolution('task3')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 4 -->
+    <div class="task-card" id="task4" data-type="option" data-ans="action-push">
+        <span class="task-title">4. Das Schild zeigt <span class="door-sign" style="font-size: 0.9em;">ОТ СЕБЯ</span>. Wie öffnest du die Tür?</span>
+        <div class="option-grid">
+            <div class="option-card" onclick="selectOption(this, 'action-pull')">
+                <div class="arrow">&darr;</div>
+                <strong>Ziehen</strong>
+            </div>
+            <div class="option-card" onclick="selectOption(this, 'action-push')">
+                <div class="arrow">&uarr;</div>
+                <strong>Drücken</strong>
+            </div>
+        </div>
+        <div class="btn-group">
+            <button class="btn-check" onclick="checkTask('task4')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task4')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolution('task4')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 5 -->
+    <div class="task-card" id="task5" data-type="select" data-ans="от себя">
+        <span class="task-title">5. Du verlässt ein Gebäude. Die Tür geht nach außen (weg von dir) auf. Welches Schild klebt auf deiner Seite?</span>
+        <select>
+            <option value="">-- bitte wählen --</option>
+            <option value="на себя">НА СЕБЯ</option>
+            <option value="от себя">ОТ СЕБЯ</option>
+        </select>
+        <div class="btn-group">
+            <button class="btn-check" onclick="checkTask('task5')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task5')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolution('task5')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 6 -->
+    <div class="task-card" id="task6" data-type="select" data-ans="на себя">
+        <span class="task-title">6. Du stehst in der Metro. Die Tür muss zu dir herangezogen werden. Welches Schild ist korrekt?</span>
+        <select>
+            <option value="">-- bitte wählen --</option>
+            <option value="на себя">НА СЕБЯ</option>
+            <option value="от себя">ОТ СЕБЯ</option>
+        </select>
+        <div class="btn-group">
+            <button class="btn-check" onclick="checkTask('task6')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task6')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolution('task6')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 7 & 8: Matching -->
+    <div class="task-card" id="task7" data-type="drag" data-ans="d7-1">
+        <span class="task-title">7. Drag & Drop: Ordne das Schild der Aktion "Ziehen" zu.</span>
+        <div class="drag-pool">
+            <div class="draggable" draggable="true" id="d7-1">НА СЕБЯ</div>
+            <div class="draggable" draggable="true" id="d7-2">ОТ СЕБЯ</div>
+        </div>
+        <p>Aktion: <strong>Ziehen</strong> &rarr; <span class="dropzone" id="dz7"></span></p>
+        <div class="btn-group">
+            <button class="btn-check" onclick="checkTask('task7')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task7')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolution('task7')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <div class="task-card" id="task8" data-type="drag" data-ans="d8-2">
+        <span class="task-title">8. Drag & Drop: Ordne das Schild der Aktion "Drücken" zu.</span>
+        <div class="drag-pool">
+            <div class="draggable" draggable="true" id="d8-1">НА СЕБЯ</div>
+            <div class="draggable" draggable="true" id="d8-2">ОТ СЕБЯ</div>
+        </div>
+        <p>Aktion: <strong>Drücken</strong> &rarr; <span class="dropzone" id="dz8"></span></p>
+        <div class="btn-group">
+            <button class="btn-check" onclick="checkTask('task8')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task8')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolution('task8')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 9 -->
+    <div class="task-card" id="task9" data-type="option" data-ans="pull">
+        <span class="task-title">9. Du bist im Hotel. Ein Schild zeigt einen Pfeil, der auf dich zeigt. Welchen Text erwartest du?</span>
+        <div class="option-grid">
+            <div class="option-card" onclick="selectOption(this, 'pull')">
+                <div class="door-sign">НА СЕБЯ</div>
+            </div>
+            <div class="option-card" onclick="selectOption(this, 'push')">
+                <div class="door-sign">ОТ СЕБЯ</div>
+            </div>
+        </div>
+        <div class="btn-group">
+            <button class="btn-check" onclick="checkTask('task9')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task9')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolution('task9')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 10 -->
+    <div class="task-card" id="task10" data-type="option" data-ans="push">
+        <span class="task-title">10. Im Bürogebäude steht an einer Glastür <span class="door-sign" style="font-size: 0.9em;">ОТ СЕБЯ</span>. Wie verhältst du dich?</span>
+        <div class="option-grid">
+            <div class="option-card" onclick="selectOption(this, 'pull')">Ziehen</div>
+            <div class="option-card" onclick="selectOption(this, 'push')">Drücken</div>
+        </div>
+        <div class="btn-group">
+            <button class="btn-check" onclick="checkTask('task10')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task10')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolution('task10')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 11 -->
+    <div class="task-card" id="task11" data-type="select" data-ans="на">
+        <span class="task-title">11. Vervollständige die Phrase zum Ziehen: ____ СЕБЯ</span>
+        <select>
+            <option value="">-- bitte wählen --</option>
+            <option value="от">ОТ</option>
+            <option value="на">НА</option>
+        </select>
+        <div class="btn-group">
+            <button class="btn-check" onclick="checkTask('task11')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task11')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolution('task11')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 12 -->
+    <div class="task-card" id="task12" data-type="select" data-ans="от">
+        <span class="task-title">12. Vervollständige die Phrase zum Drücken: ____ СЕБЯ</span>
+        <select>
+            <option value="">-- bitte wählen --</option>
+            <option value="от">ОТ</option>
+            <option value="на">НА</option>
+        </select>
+        <div class="btn-group">
+            <button class="btn-check" onclick="checkTask('task12')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task12')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolution('task12')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Drag & Drop
+    let draggedItem = null;
+
+    document.querySelectorAll('.draggable').forEach(item => {
+        item.addEventListener('dragstart', function(e) {
+            draggedItem = this;
+            e.dataTransfer.setData('text/plain', this.id);
+        });
+    });
+
+    document.querySelectorAll('.dropzone').forEach(zone => {
+        zone.addEventListener('dragover', e => e.preventDefault());
+        zone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            if (this.childNodes.length === 0) {
+                this.appendChild(draggedItem);
+            }
+        });
+    });
+
+    // Option Auswahl
+    function selectOption(el, val) {
+        const parent = el.closest('.option-grid');
+        parent.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        el.dataset.value = val;
+    }
+
+    // Hauptlogik Überprüfung
+    function checkTask(id) {
+        const task = document.getElementById(id);
+        const type = task.dataset.type;
+        const ans = task.dataset.ans;
+        let isCorrect = false;
+
+        if (type === 'option') {
+            const selected = task.querySelector('.option-card.selected');
+            if (selected && selected.dataset.value === ans) isCorrect = true;
+        } else if (type === 'select') {
+            const val = task.querySelector('select').value;
+            if (val === ans) isCorrect = true;
+        } else if (type === 'drag') {
+            const zone = task.querySelector('.dropzone');
+            if (zone.firstChild && zone.firstChild.id === ans) isCorrect = true;
+        }
+
+        task.classList.remove('correct', 'incorrect');
+        task.classList.add(isCorrect ? 'correct' : 'incorrect');
+    }
+
+    // Zurücksetzen
+    function resetTask(id) {
+        const task = document.getElementById(id);
+        task.classList.remove('correct', 'incorrect');
+        
+        if (task.dataset.type === 'option') {
+            task.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+        } else if (task.dataset.type === 'select') {
+            task.querySelector('select').value = "";
+        } else if (task.dataset.type === 'drag') {
+            const zone = task.querySelector('.dropzone');
+            const pool = task.querySelector('.drag-pool');
+            while (zone.firstChild) pool.appendChild(zone.firstChild);
+        }
+    }
+
+    // Lösung anzeigen
+    function showSolution(id) {
+        const task = document.getElementById(id);
+        resetTask(id);
+        const type = task.dataset.type;
+        const ans = task.dataset.ans;
+
+        if (type === 'option') {
+            task.querySelectorAll('.option-card').forEach(c => {
+                // Check direct value or simple string match for demonstration
+                if (c.innerHTML.includes(ans.toUpperCase()) || c.innerText.includes("Ziehen") && ans.includes("pull") || c.innerText.includes("Drücken") && ans.includes("push")) {
+                    c.classList.add('selected');
+                }
+                // Fallback for specific logic
+                if (id === 'task3' && ans === 'action-pull' && c.innerText.includes("Ziehen")) c.classList.add('selected');
+                if (id === 'task4' && ans === 'action-push' && c.innerText.includes("Drücken")) c.classList.add('selected');
+                if (id === 'task9' && ans === 'pull' && c.innerHTML.includes("НА СЕБЯ")) c.classList.add('selected');
+                if (id === 'task10' && ans === 'push' && c.innerText.includes("Drücken")) c.classList.add('selected');
+                if ((id === 'task1' || id === 'task2') && c.innerHTML.includes(ans === 'pull' ? 'НА СЕБЯ' : 'ОТ СЕБЯ')) c.classList.add('selected');
+            });
+        } else if (type === 'select') {
+            task.querySelector('select').value = ans;
+        } else if (type === 'drag') {
+            const zone = task.querySelector('.dropzone');
+            const item = document.getElementById(ans);
+            zone.appendChild(item);
+        }
+        task.classList.add('correct');
+    }
+</script>
+
+</body>
+</html>
