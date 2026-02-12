@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grammatiktheorie: Das Pronomen себя</title>
+    <!-- Polyfill für Drag and Drop auf Touch-Geräten -->
+    <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch@1.3.1/DragDropTouch.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --success-bg: #d4edda;
+            --success-border: #28a745;
+            --error-bg: #f8d7da;
+            --error-border: #dc3545;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-wrapper {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+
+        h1 { text-align: center; border-bottom: 3px solid var(--accent-color); padding-bottom: 10px; }
+        
+        .intro-box {
+            background: #eef7ff;
+            border-left: 6px solid var(--accent-color);
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+
+        .task-card {
+            border: 2px solid #e0e6ed;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+
+        /* Feedback-Farben für die ganze Karte */
+        .task-card.is-correct { background-color: var(--success-bg); border-color: var(--success-border); }
+        .task-card.is-incorrect { background-color: var(--error-bg); border-color: var(--error-border); }
+
+        .task-title {
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .statement {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        /* Wahl-Optionen */
+        .options-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .option-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ced4da;
+            border-radius: 8px;
+            background: #f8f9fa;
+            cursor: pointer;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover { background: #e9ecef; }
+        .option-btn.selected { border-color: var(--accent-color); background: #e1f5fe; }
+
+        /* Erklärungs-Text */
+        .explanation {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 5px;
+            font-size: 0.9em;
+            border-left: 3px solid var(--accent-color);
+        }
+
+        /* Steuerungstasten */
+        .button-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        button.action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .btn-check { background: #27ae60; color: white; }
+        .btn-reset { background: #95a5a6; color: white; }
+        .btn-sol { background: #3498db; color: white; }
+        button:hover { opacity: 0.9; }
+
+        @media (max-width: 600px) {
+            .main-wrapper { padding: 15px; }
+            .button-group { flex-direction: column; }
+            button.action-btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-wrapper">
+    <h1>Theorie-Check: Das Pronomen себя</h1>
+
+    <div class="intro-box">
+        <p>Wie gut kennst du die theoretischen Regeln des russischen Reflexivpronomens? Das Wort <strong>себя</strong> ist einzigartig in der russischen Grammatik. Teste dein Wissen mit diesen 12 Aussagen!</p>
+    </div>
+
+    <!-- Aufgaben werden via JS generiert -->
+    <div id="quiz-container"></div>
+
+</div>
+
+<script>
+    const quizData = [
+        {
+            id: 1,
+            q: "Das Wort „себя“ besitzt eine Nominativform.",
+            ans: false,
+            desc: "Falsch. Das Wort hat keinen Nominativ und kann daher nie Subjekt sein."
+        },
+        {
+            id: 2,
+            q: "Das Pronomen „себя“ ist für alle drei Geschlechter (m, w, s) identisch.",
+            ans: true,
+            desc: "Wahr. Es ändert sich nicht nach dem Geschlecht des Subjekts."
+        },
+        {
+            id: 3,
+            q: "Im Dativ lautet die Form „себе“.",
+            ans: true,
+            desc: "Wahr. Beispiel: „купить себе цветы“."
+        },
+        {
+            id: 4,
+            q: "Das Wort „себя“ verändert seine Form im Plural.",
+            ans: false,
+            desc: "Falsch. Es gibt keine Pluralform; es bleibt im Singular und Plural gleich."
+        },
+        {
+            id: 5,
+            q: "Die Form für den Genitiv und den Akkusativ ist identisch („себя“).",
+            ans: true,
+            desc: "Wahr. Beide Fälle nutzen die Form „себя“."
+        },
+        {
+            id: 6,
+            q: "„себя“ kann sich auf die 1., 2. und 3. Person beziehen (ich, du, er...).",
+            ans: true,
+            desc: "Wahr. Es passt sich dem jeweiligen Subjekt des Satzes an."
+        },
+        {
+            id: 7,
+            q: "Im Instrumental verwendet man die Form „собой“.",
+            ans: true,
+            desc: "Wahr. Oft nach der Präposition „с“: „с собой“."
+        },
+        {
+            id: 8,
+            q: "„себя“ gilt grammatikalisch als ein Personalpronomen.",
+            ans: false,
+            desc: "Falsch. Es ist ein Reflexivpronomen (rückbezügliches Pronomen)."
+        },
+        {
+            id: 9,
+            q: "Nach der Präposition „о“ (über) folgt die Form „себе“.",
+            ans: true,
+            desc: "Wahr. Das ist der Präpositiv (6. Fall)."
+        },
+        {
+            id: 10,
+            q: "Das Pronomen kann sich auch auf ein Objekt im Satz beziehen.",
+            ans: false,
+            desc: "Falsch. Es bezieht sich im Russischen immer streng auf das Subjekt."
+        },
+        {
+            id: 11,
+            q: "Beim Befinden (чувствовать себя) ist das Wort „себя“ optional.",
+            ans: false,
+            desc: "Falsch. Es ist im Russischen zwingend erforderlich, um sich auf das eigene Befinden zu beziehen."
+        },
+        {
+            id: 12,
+            q: "Das Wort „себя“ hat insgesamt 5 verschiedene Beugungsformen.",
+            ans: true,
+            desc: "Wahr. Da der Nominativ fehlt, bleiben 5 Formen für die restlichen 5 Fälle (wobei Gen/Akk und Dat/Präp teilweise gleich klingen)."
+        }
+    ];
+
+    const container = document.getElementById('quiz-container');
+
+    quizData.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'task-card';
+        card.id = `card-${item.id}`;
+        card.innerHTML = `
+            <span class="task-title">Frage ${item.id}</span>
+            <div class="statement">${item.q}</div>
+            
+            <div class="options-container">
+                <div class="option-btn" id="btn-true-${item.id}" onclick="selectOp(${item.id}, true)">Wahr</div>
+                <div class="option-btn" id="btn-false-${item.id}" onclick="selectOp(${item.id}, false)">Falsch</div>
+            </div>
+
+            <div class="explanation" id="exp-${item.id}">${item.desc}</div>
+
+            <div class="button-group">
+                <button class="action-btn btn-check" onclick="checkTask(${item.id})">Überprüfen</button>
+                <button class="action-btn btn-reset" onclick="resetTask(${item.id})">Zurücksetzen</button>
+                <button class="action-btn btn-sol" onclick="showSol(${item.id})">Lösung anzeigen</button>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+
+    const userSelections = {};
+
+    window.selectOp = function(id, val) {
+        userSelections[id] = val;
+        const trueBtn = document.getElementById(`btn-true-${id}`);
+        const falseBtn = document.getElementById(`btn-false-${id}`);
+        
+        trueBtn.classList.remove('selected');
+        falseBtn.classList.remove('selected');
+        
+        if(val === true) trueBtn.classList.add('selected');
+        else falseBtn.classList.add('selected');
+
+        // Reset feedback on new selection
+        document.getElementById(`card-${id}`).className = 'task-card';
+        document.getElementById(`exp-${id}`).style.display = 'none';
+    };
+
+    window.checkTask = function(id) {
+        const card = document.getElementById(`card-${id}`);
+        const exp = document.getElementById(`exp-${id}`);
+        
+        if (userSelections[id] === undefined) {
+            alert("Bitte wähle erst eine Antwort (Wahr oder Falsch) aus.");
+            return;
+        }
+
+        const isCorrect = userSelections[id] === quizData.find(d => d.id === id).ans;
+        
+        card.className = isCorrect ? 'task-card is-correct' : 'task-card is-incorrect';
+        exp.style.display = 'block';
+    };
+
+    window.resetTask = function(id) {
+        delete userSelections[id];
+        const card = document.getElementById(`card-${id}`);
+        const exp = document.getElementById(`exp-${id}`);
+        const trueBtn = document.getElementById(`btn-true-${id}`);
+        const falseBtn = document.getElementById(`btn-false-${id}`);
+        
+        card.className = 'task-card';
+        exp.style.display = 'none';
+        trueBtn.classList.remove('selected');
+        falseBtn.classList.remove('selected');
+    };
+
+    window.showSol = function(id) {
+        const correctVal = quizData.find(d => d.id === id).ans;
+        selectOp(id, correctVal);
+        checkTask(id);
+    };
+</script>
+
+</body>
+</html>
