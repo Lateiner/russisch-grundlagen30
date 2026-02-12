@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktives Russisch-Arbeitsblatt: себя</title>
+    <!-- Polyfill für Drag and Drop auf Touch-Geräten -->
+    <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch@1.3.1/DragDropTouch.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --success-bg: #d4edda;
+            --success-border: #28a745;
+            --error-bg: #f8d7da;
+            --error-border: #dc3545;
+            --bg-color: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-content {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 { text-align: center; color: var(--primary-color); }
+        h1 { border-bottom: 3px solid var(--accent-color); padding-bottom: 15px; }
+
+        .intro-box {
+            background: #e1f5fe;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            border-left: 6px solid var(--accent-color);
+        }
+
+        .task-section {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .task-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+            display: block;
+        }
+
+        /* Form-Elemente Styling */
+        select {
+            padding: 8px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            margin: 0 5px;
+            transition: background 0.3s;
+        }
+
+        .radio-container {
+            display: block;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            background: #f1f3f5;
+        }
+
+        .radio-container input { margin-right: 10px; }
+
+        /* Drag & Drop Styling */
+        .drag-pool {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 1px dashed #ced4da;
+            border-radius: 8px;
+            min-height: 50px;
+        }
+
+        .draggable {
+            background: white;
+            border: 2px solid var(--accent-color);
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: move;
+            user-select: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .dropzone {
+            display: inline-block;
+            min-width: 100px;
+            height: 35px;
+            border-bottom: 2px solid #adb5bd;
+            vertical-align: middle;
+            margin: 0 5px;
+            text-align: center;
+            transition: background 0.3s;
+        }
+
+        .dropzone.over { background: #e3f2fd; border-bottom-color: var(--accent-color); }
+
+        /* Feedback Farben */
+        .correct-ui { background-color: var(--success-bg) !important; border-color: var(--success-border) !important; }
+        .incorrect-ui { background-color: var(--error-bg) !important; border-color: var(--error-border) !important; }
+
+        /* Button Styling */
+        .button-bar { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
+        button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.1s;
+        }
+        button:active { transform: scale(0.95); }
+        .btn-check { background: #28a745; color: white; }
+        .btn-reset { background: #6c757d; color: white; }
+        .btn-sol { background: #17a2b8; color: white; }
+
+        @media (max-width: 600px) {
+            .main-content { padding: 20px; }
+            .button-bar { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-content">
+    <h1>Russische Grammatik: Pronomen себя</h1>
+
+    <div class="intro-box">
+        <h2>Grundlagen</h2>
+        <p>Das Wort <strong>себя</strong> ist ein Reflexivpronomen (sich). Es hat eine Besonderheit: Es gibt <strong>keinen Nominativ</strong>. Es bezieht sich immer auf das Subjekt des Satzes zurück.</p>
+        <p><strong>Die Formen:</strong><br>
+        • Genitiv/Akkusativ: <strong>себя</strong><br>
+        • Dativ/Präpositiv: <strong>себе</strong><br>
+        • Instrumental: <strong>собой</strong></p>
+    </div>
+
+    <!-- Aufgaben -->
+    
+    <!-- Aufgabe 1 -->
+    <div class="task-section" id="t1">
+        <span class="task-title">1. Akkusativ: „Das Mädchen sieht sich im Spiegel.“</span>
+        <p>Девочка видит в зеркале 
+            <select data-ans="себя">
+                <option value="">...</option>
+                <option value="себя">себя</option>
+                <option value="себе">себе</option>
+            </select>.</p>
+        <div class="button-bar">
+            <button class="btn-check" onclick="checkSel('t1')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('t1')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolSel('t1')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 2 -->
+    <div class="task-section" id="t2">
+        <span class="task-title">2. Dativ: „Die Oma kaufte sich Blumen.“</span>
+        <p>Бабушка купила 
+            <select data-ans="себе">
+                <option value="">...</option>
+                <option value="себя">себя</option>
+                <option value="себе">себе</option>
+            </select> цветы.</p>
+        <div class="button-bar">
+            <button class="btn-check" onclick="checkSel('t2')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('t2')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolSel('t2')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 3 -->
+    <div class="task-section" id="t3">
+        <span class="task-title">3. Instrumental: „Hast du ein Handy bei dir?“</span>
+        <p>У тебя есть с 
+            <select data-ans="собой">
+                <option value="">...</option>
+                <option value="собой">собой</option>
+                <option value="себя">себя</option>
+            </select> телефон?</p>
+        <div class="button-bar">
+            <button class="btn-check" onclick="checkSel('t3')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('t3')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolSel('t3')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 4 -->
+    <div class="task-section" id="t4">
+        <span class="task-title">4. Präpositiv: „Sie liebt es, über sich zu sprechen.“</span>
+        <p>Она любит говорить о 
+            <select data-ans="себе">
+                <option value="">...</option>
+                <option value="себе">себе</option>
+                <option value="собой">собой</option>
+            </select>.</p>
+        <div class="button-bar">
+            <button class="btn-check" onclick="checkSel('t4')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('t4')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolSel('t4')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 5 (Radio) -->
+    <div class="task-section" id="t5">
+        <span class="task-title">5. Bedeutung: Was bedeutet „Ничего себе!“?</span>
+        <label class="radio-container"><input type="radio" name="r5" data-correct="true"> Wahnsinn! / Oha!</label>
+        <label class="radio-container"><input type="radio" name="r5"> Ich habe nichts.</label>
+        <div class="button-bar">
+            <button class="btn-check" onclick="checkRadio('t5')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('t5')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolRadio('t5')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 6 (Radio) -->
+    <div class="task-section" id="t6">
+        <span class="task-title">6. Tür-Schild: Was bedeutet „ОТ СЕБЯ“?</span>
+        <label class="radio-container"><input type="radio" name="r6"> Ziehen</label>
+        <label class="radio-container"><input type="radio" name="r6" data-correct="true"> Drücken (von sich weg)</label>
+        <div class="button-bar">
+            <button class="btn-check" onclick="checkRadio('t6')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('t6')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolRadio('t6')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 7 (Drag & Drop) -->
+    <div class="task-section" id="t7">
+        <span class="task-title">7. Zuordnung: Verbinde die Ausdrücke.</span>
+        <div class="drag-pool" id="pool7">
+            <div class="draggable" draggable="true" id="d7-1" data-match="z7-1">sich fühlen</div>
+            <div class="draggable" draggable="true" id="d7-2" data-match="z7-2">sich benehmen</div>
+        </div>
+        <p>вести себя: <span class="dropzone" id="z7-2"></span></p>
+        <p>чувствовать себя: <span class="dropzone" id="z7-1"></span></p>
+        <div class="button-bar">
+            <button class="btn-check" onclick="checkDrag('t7')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('t7')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolDrag('t7')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 8 (Drag & Drop) -->
+    <div class="task-section" id="t8">
+        <span class="task-title">8. Satzbau: „Kostja hat uns zu sich eingeladen.“</span>
+        <div class="drag-pool" id="pool8">
+            <div class="draggable" draggable="true" id="d8-1" data-match="z8-1">Костя</div>
+            <div class="draggable" draggable="true" id="d8-2" data-match="z8-2">нас</div>
+            <div class="draggable" draggable="true" id="d8-3" data-match="z8-3">к себе</div>
+            <div class="draggable" draggable="true" id="d8-4" data-match="z8-4">пригласил</div>
+        </div>
+        <div style="margin-top: 15px;">
+            <span class="dropzone" id="z8-1"></span> 
+            <span class="dropzone" id="z8-4"></span> 
+            <span class="dropzone" id="z8-2"></span> 
+            <span class="dropzone" id="z8-3"></span>.
+        </div>
+        <div class="button-bar">
+            <button class="btn-check" onclick="checkDrag('t8')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('t8')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolDrag('t8')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 9 (Select) -->
+    <div class="task-section" id="t9">
+        <span class="task-title">9. Ergänze: „Ich verspreche mir selbst...“</span>
+        <p>Я даю <select data-ans="себе">
+            <option value="">...</option>
+            <option value="себе">себе</option>
+            <option value="собой">собой</option>
+        </select> слово.</p>
+        <div class="button-bar">
+            <button class="btn-check" onclick="checkSel('t9')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('t9')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolSel('t9')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 10 (Radio) -->
+    <div class="task-section" id="t10">
+        <span class="task-title">10. Grammatik: Warum gibt es „себя“ nicht im 1. Fall?</span>
+        <label class="radio-container"><input type="radio" name="r10" data-correct="true"> Weil es kein Subjekt sein kann.</label>
+        <label class="radio-container"><input type="radio" name="r10"> Weil Russisch nur 5 Fälle hat.</label>
+        <div class="button-bar">
+            <button class="btn-check" onclick="checkRadio('t10')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('t10')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolRadio('t10')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 11 (Select) -->
+    <div class="task-section" id="t11">
+        <span class="task-title">11. Akkusativ: „Er hört nicht auf sich.“</span>
+        <p>Он не слушает <select data-ans="себя">
+            <option value="">...</option>
+            <option value="себя">себя</option>
+            <option value="себе">себе</option>
+        </select>.</p>
+        <div class="button-bar">
+            <button class="btn-check" onclick="checkSel('t11')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('t11')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolSel('t11')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 12 (Drag & Drop) -->
+    <div class="task-section" id="t12">
+        <span class="task-title">12. Bedeutung: Ordne zu.</span>
+        <div class="drag-pool" id="pool12">
+            <div class="draggable" draggable="true" id="d12-1" data-match="z12-1">still lesen</div>
+            <div class="draggable" draggable="true" id="d12-2" data-match="z12-2">sich pflegen</div>
+        </div>
+        <p>следить за собой: <span class="dropzone" id="z12-2"></span></p>
+        <p>читать про себя: <span class="dropzone" id="z12-1"></span></p>
+        <div class="button-bar">
+            <button class="btn-check" onclick="checkDrag('t12')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('t12')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolDrag('t12')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Drag & Drop Logic
+    let draggedItem = null;
+
+    document.querySelectorAll('.draggable').forEach(item => {
+        item.addEventListener('dragstart', function() {
+            draggedItem = this;
+            setTimeout(() => this.style.opacity = '0.5', 0);
+        });
+        item.addEventListener('dragend', function() {
+            setTimeout(() => this.style.opacity = '1', 0);
+            draggedItem = null;
+        });
+    });
+
+    document.querySelectorAll('.dropzone, .drag-pool').forEach(zone => {
+        zone.addEventListener('dragover', e => e.preventDefault());
+        zone.addEventListener('dragenter', function() { this.classList.add('over'); });
+        zone.addEventListener('dragleave', function() { this.classList.remove('over'); });
+        zone.addEventListener('drop', function() {
+            this.classList.remove('over');
+            if (draggedItem) {
+                if(this.classList.contains('dropzone') && this.children.length > 0) return;
+                this.appendChild(draggedItem);
+            }
+        });
+    });
+
+    // Validierung Logik
+    function checkSel(id) {
+        const el = document.getElementById(id).querySelector('select');
+        el.className = (el.value === el.dataset.ans) ? 'correct-ui' : 'incorrect-ui';
+    }
+
+    function showSolSel(id) {
+        const el = document.getElementById(id).querySelector('select');
+        el.value = el.dataset.ans;
+        el.className = 'correct-ui';
+    }
+
+    function checkRadio(id) {
+        const containers = document.getElementById(id).querySelectorAll('.radio-container');
+        containers.forEach(c => {
+            const input = c.querySelector('input');
+            if(input.checked) {
+                c.className = input.dataset.correct ? 'radio-container correct-ui' : 'radio-container incorrect-ui';
+            } else {
+                c.className = 'radio-container';
+            }
+        });
+    }
+
+    function showSolRadio(id) {
+        const containers = document.getElementById(id).querySelectorAll('.radio-container');
+        containers.forEach(c => {
+            const input = c.querySelector('input');
+            input.checked = !!input.dataset.correct;
+            c.className = input.dataset.correct ? 'radio-container correct-ui' : 'radio-container';
+        });
+    }
+
+    function checkDrag(id) {
+        const zones = document.getElementById(id).querySelectorAll('.dropzone');
+        zones.forEach(z => {
+            if(z.children.length > 0) {
+                const isMatch = z.firstChild.dataset.match === z.id;
+                z.className = isMatch ? 'dropzone correct-ui' : 'dropzone incorrect-ui';
+            } else {
+                z.className = 'dropzone incorrect-ui';
+            }
+        });
+    }
+
+    function showSolDrag(id) {
+        const task = document.getElementById(id);
+        const draggables = task.querySelectorAll('.draggable');
+        draggables.forEach(d => {
+            const target = document.getElementById(d.dataset.match);
+            target.appendChild(d);
+            target.className = 'dropzone correct-ui';
+        });
+    }
+
+    function resetTask(id) {
+        const task = document.getElementById(id);
+        // Reset Selects
+        task.querySelectorAll('select').forEach(s => { s.value = ""; s.className = ""; });
+        // Reset Radios
+        task.querySelectorAll('.radio-container').forEach(c => {
+            c.className = 'radio-container';
+            c.querySelector('input').checked = false;
+        });
+        // Reset Drag & Drop
+        const pool = task.querySelector('.drag-pool');
+        task.querySelectorAll('.dropzone').forEach(z => {
+            z.className = 'dropzone';
+            while(z.firstChild) pool.appendChild(z.firstChild);
+        });
+    }
+</script>
+
+</body>
+</html>
