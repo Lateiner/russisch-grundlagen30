@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Russisch-Lernmodul: Befinden ausdrücken mit себя</title>
+    <!-- Polyfill für Drag and Drop auf Touch-Geräten -->
+    <script src="https://cdn.jsdelivr.net/npm/drag-drop-touch@1.3.1/DragDropTouch.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --success-bg: #d4edda;
+            --success-border: #28a745;
+            --error-bg: #f8d7da;
+            --error-border: #dc3545;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-content {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            padding: 25px 35px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+
+        h1 { text-align: center; border-bottom: 3px solid var(--accent-color); padding-bottom: 15px; }
+        
+        .intro-box {
+            background: #eef7ff;
+            border-left: 6px solid var(--accent-color);
+            padding: 20px;
+            margin-bottom: 35px;
+            border-radius: 8px;
+        }
+
+        .task-card {
+            border: 2px solid #e0e6ed;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+
+        /* Feedback-Farben */
+        .task-card.correct { background-color: var(--success-bg); border-color: var(--success-border); }
+        .task-card.incorrect { background-color: var(--error-bg); border-color: var(--error-border); }
+
+        .task-header {
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            display: block;
+            font-size: 1.1em;
+        }
+
+        /* Interaktive Elemente */
+        .option-group { margin: 15px 0; }
+        
+        .radio-item {
+            display: block;
+            padding: 12px;
+            margin: 8px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.2s;
+        }
+        .radio-item:hover { background: #e9ecef; }
+        .radio-item input { margin-right: 10px; }
+
+        select {
+            padding: 8px;
+            border-radius: 6px;
+            border: 2px solid #ccc;
+            font-size: 1em;
+            margin: 5px 0;
+            background-color: white;
+        }
+
+        /* Drag & Drop */
+        .drag-pool {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 15px;
+            background: #f1f3f5;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            margin: 15px 0;
+            min-height: 50px;
+        }
+
+        .draggable {
+            background: white;
+            border: 2px solid var(--accent-color);
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: move;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            user-select: none;
+        }
+
+        .dropzone {
+            display: inline-block;
+            min-width: 110px;
+            height: 35px;
+            border-bottom: 2px solid #999;
+            vertical-align: middle;
+            margin: 0 5px;
+            text-align: center;
+        }
+
+        /* Buttons */
+        .btn-container { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.1s;
+        }
+        button:active { transform: scale(0.95); }
+        .btn-check { background-color: #27ae60; color: white; }
+        .btn-reset { background-color: #95a5a6; color: white; }
+        .btn-sol { background-color: #3498db; color: white; }
+        button:hover { opacity: 0.9; }
+
+        @media (max-width: 600px) {
+            .main-content { padding: 15px; }
+            .btn-container { flex-direction: column; }
+            button { width: 100%; }
+            .dropzone { min-width: 90px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-content">
+    <h1>Befinden ausdrücken: „Sich fühlen“</h1>
+
+    <div class="intro-box">
+        <p>Im Russischen verwendet man für das Befinden das Verb <strong>чувствовать</strong> (fühlen). Anders als im Deutschen, wo wir „mich“, „dich“, „uns“ usw. anpassen, nutzt das Russische <strong>immer</strong> das unveränderliche Wort <strong>себя</strong>.</p>
+        <p>Beispiel: „Я чувствую <strong>себя</strong> хорошо.“ (Ich fühle <strong>mich</strong> gut.)</p>
+    </div>
+
+    <!-- 12 AUFGABEN -->
+
+    <!-- Aufgabe 1 -->
+    <div class="task-card" id="task1">
+        <span class="task-header">1. Wähle die richtige Form: „Ich fühle mich gut.“</span>
+        <p>Я чувствую <select data-correct="себя">
+            <option value="">-- wählen --</option>
+            <option value="меня">меня (mich)</option>
+            <option value="себя">себя (sich)</option>
+        </select> хорошо.</p>
+        <div class="btn-container">
+            <button class="btn-check" onclick="checkSelect('task1')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task1')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolutionSelect('task1')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 2 -->
+    <div class="task-card" id="task2">
+        <span class="task-header">2. Welche Aussage ist korrekt?</span>
+        <label class="radio-item"><input type="radio" name="q2"> Я чувствую хорошо.</label>
+        <label class="radio-item"><input type="radio" name="q2" data-correct="true"> Я чувствую себя хорошо.</label>
+        <div class="btn-container">
+            <button class="btn-check" onclick="checkRadio('task2')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task2')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolutionRadio('task2')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 3 -->
+    <div class="task-card" id="task3">
+        <span class="task-header">3. Bringe den Satz in die richtige Reihenfolge: „Wie fühlst du dich?“</span>
+        <div class="drag-pool">
+            <div class="draggable" draggable="true" id="d3-1" data-target="dz3-1">Как</div>
+            <div class="draggable" draggable="true" id="d3-2" data-target="dz3-2">ты</div>
+            <div class="draggable" draggable="true" id="d3-3" data-target="dz3-3">себя</div>
+            <div class="draggable" draggable="true" id="d3-4" data-target="dz3-4">чувствуешь</div>
+        </div>
+        <div style="margin-top: 15px;">
+            <span class="dropzone" id="dz3-1"></span> <span class="dropzone" id="dz3-2"></span> <span class="dropzone" id="dz3-4"></span> <span class="dropzone" id="dz3-3"></span>?
+        </div>
+        <div class="btn-container">
+            <button class="btn-check" onclick="checkDrag('task3')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task3')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolutionDrag('task3')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 4 -->
+    <div class="task-card" id="task4">
+        <span class="task-header">4. Ergänze: „Er fühlt sich schlecht.“</span>
+        <p>Он чувствует <select data-correct="себя">
+            <option value="">-- wählen --</option>
+            <option value="его">его (ihn)</option>
+            <option value="себя">себя (sich)</option>
+        </select> плохо.</p>
+        <div class="btn-container">
+            <button class="btn-check" onclick="checkSelect('task4')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task4')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolutionSelect('task4')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 5 -->
+    <div class="task-card" id="task5">
+        <span class="task-header">5. Mehrzahl: „Wir fühlen uns heute ausgezeichnet.“</span>
+        <p>Мы чувствуем <select data-correct="себя">
+            <option value="">-- wählen --</option>
+            <option value="нас">нас (uns)</option>
+            <option value="себя">себя (sich)</option>
+        </select> сегодня отлично.</p>
+        <div class="btn-container">
+            <button class="btn-check" onclick="checkSelect('task5')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task5')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolutionSelect('task5')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 6 -->
+    <div class="task-card" id="task6">
+        <span class="task-header">6. Dialog: „Geht es dir gut?“ — „Ja, ich fühle mich normal.“</span>
+        <p>— Ты в порядке? <br> — Да, я чувствую <select data-correct="себя">
+            <option value="">...</option>
+            <option value="меня">меня</option>
+            <option value="себя">себя</option>
+        </select> нормально.</p>
+        <div class="btn-container">
+            <button class="btn-check" onclick="checkSelect('task6')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task6')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolutionSelect('task6')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 7 -->
+    <div class="task-card" id="task7">
+        <span class="task-header">7. Logik-Check: Warum ist „Я чувствую меня хорошо“ falsch?</span>
+        <label class="radio-item"><input type="radio" name="q7"> Im Russischen gibt es das Wort „меня“ nicht.</label>
+        <label class="radio-item"><input type="radio" name="q7" data-correct="true"> Das Verb „чувствовать“ verlangt bei Befinden immer das Reflexivpronomen „себя“.</label>
+        <div class="btn-container">
+            <button class="btn-check" onclick="checkRadio('task7')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task7')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolutionRadio('task7')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 8 -->
+    <div class="task-card" id="task8">
+        <span class="task-header">8. Drag & Drop: Übersetze „Sie fühlt sich müde.“</span>
+        <div class="drag-pool">
+            <div class="draggable" draggable="true" id="d8-1" data-target="dz8-1">Она</div>
+            <div class="draggable" draggable="true" id="d8-2" data-target="dz8-2">чувствует</div>
+            <div class="draggable" draggable="true" id="d8-3" data-target="dz8-3">себя</div>
+            <div class="draggable" draggable="true" id="d8-4" data-target="dz8-4">усталой</div>
+        </div>
+        <div style="margin-top: 15px;">
+            <span class="dropzone" id="dz8-1"></span> <span class="dropzone" id="dz8-2"></span> <span class="dropzone" id="dz8-3"></span> <span class="dropzone" id="dz8-4"></span>.
+        </div>
+        <div class="btn-container">
+            <button class="btn-check" onclick="checkDrag('task8')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task8')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolutionDrag('task8')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 9 -->
+    <div class="task-card" id="task9">
+        <span class="task-header">9. Vergangene Form: „Gestern fühlte ich mich nicht wohl.“</span>
+        <p>Вчера я не чувствовал <select data-correct="себя">
+            <option value="">...</option>
+            <option value="себя">себя</option>
+            <option value="меня">меня</option>
+        </select> бодрым.</p>
+        <div class="btn-container">
+            <button class="btn-check" onclick="checkSelect('task9')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task9')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolutionSelect('task9')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 10 -->
+    <div class="task-card" id="task10">
+        <span class="task-header">10. Höfliche Form: „Wie fühlen Sie sich, Iwan Petrowitsch?“</span>
+        <p>Иван Петрович, как Вы <select data-correct="себя">
+            <option value="">...</option>
+            <option value="Вас">Вас</option>
+            <option value="себя">себя</option>
+        </select> чувствуете?</p>
+        <div class="btn-container">
+            <button class="btn-check" onclick="checkSelect('task10')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task10')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolutionSelect('task10')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 11 -->
+    <div class="task-card" id="task11">
+        <span class="task-header">11. Welches Wort fehlt hier? „Sie fühlen ____ glücklich.“</span>
+        <p>Они чувствуют <select data-correct="себя">
+            <option value="">-- wählen --</option>
+            <option value="себя">себя</option>
+            <option value="их">их</option>
+        </select> счастливыми.</p>
+        <div class="btn-container">
+            <button class="btn-check" onclick="checkSelect('task11')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task11')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolutionSelect('task11')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+    <!-- Aufgabe 12 -->
+    <div class="task-card" id="task12">
+        <span class="task-header">12. „Ich fühle mich wie zu Hause.“</span>
+        <p>Я чувствую <select data-correct="себя">
+            <option value="">...</option>
+            <option value="себя">себя</option>
+            <option value="меня">меня</option>
+        </select> как дома.</p>
+        <div class="btn-container">
+            <button class="btn-check" onclick="checkSelect('task12')">Überprüfen</button>
+            <button class="btn-reset" onclick="resetTask('task12')">Zurücksetzen</button>
+            <button class="btn-sol" onclick="showSolutionSelect('task12')">Lösung anzeigen</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Drag and Drop Logik
+    let draggedItem = null;
+
+    document.querySelectorAll('.draggable').forEach(item => {
+        item.addEventListener('dragstart', function() {
+            draggedItem = this;
+            setTimeout(() => this.style.display = 'none', 0);
+        });
+        item.addEventListener('dragend', function() {
+            setTimeout(() => this.style.display = 'block', 0);
+            draggedItem = null;
+        });
+    });
+
+    document.querySelectorAll('.dropzone, .drag-pool').forEach(zone => {
+        zone.addEventListener('dragover', e => e.preventDefault());
+        zone.addEventListener('dragenter', function() { this.style.backgroundColor = '#e3f2fd'; });
+        zone.addEventListener('dragleave', function() { this.style.backgroundColor = ''; });
+        zone.addEventListener('drop', function() {
+            this.style.backgroundColor = '';
+            if (draggedItem) {
+                if(this.classList.contains('dropzone') && this.children.length > 0) return;
+                this.appendChild(draggedItem);
+            }
+        });
+    });
+
+    // Validierung: Dropdown
+    function checkSelect(id) {
+        const card = document.getElementById(id);
+        const sel = card.querySelector('select');
+        card.classList.remove('correct', 'incorrect');
+        if (sel.value === sel.dataset.correct) {
+            card.classList.add('correct');
+        } else {
+            card.classList.add('incorrect');
+        }
+    }
+
+    function showSolutionSelect(id) {
+        const card = document.getElementById(id);
+        const sel = card.querySelector('select');
+        sel.value = sel.dataset.correct;
+        card.classList.remove('incorrect');
+        card.classList.add('correct');
+    }
+
+    // Validierung: Radio
+    function checkRadio(id) {
+        const card = document.getElementById(id);
+        const checked = card.querySelector('input[type="radio"]:checked');
+        card.classList.remove('correct', 'incorrect');
+        if (checked && checked.dataset.correct === "true") {
+            card.classList.add('correct');
+        } else {
+            card.classList.add('incorrect');
+        }
+    }
+
+    function showSolutionRadio(id) {
+        const card = document.getElementById(id);
+        const correct = card.querySelector('input[data-correct="true"]');
+        correct.checked = true;
+        card.classList.remove('incorrect');
+        card.classList.add('correct');
+    }
+
+    // Validierung: Drag and Drop
+    function checkDrag(id) {
+        const card = document.getElementById(id);
+        const zones = card.querySelectorAll('.dropzone');
+        let allCorrect = true;
+        zones.forEach(z => {
+            if (z.firstChild && z.firstChild.dataset.target === z.id) {
+                z.style.borderColor = 'var(--success-border)';
+            } else {
+                z.style.borderColor = 'var(--error-border)';
+                allCorrect = false;
+            }
+        });
+        card.classList.remove('correct', 'incorrect');
+        card.classList.add(allCorrect ? 'correct' : 'incorrect');
+    }
+
+    function showSolutionDrag(id) {
+        const card = document.getElementById(id);
+        const pool = card.querySelector('.drag-pool');
+        const draggables = card.querySelectorAll('.draggable');
+        draggables.forEach(d => {
+            const target = document.getElementById(d.dataset.target);
+            target.appendChild(d);
+            target.style.borderColor = 'var(--success-border)';
+        });
+        card.classList.remove('incorrect');
+        card.classList.add('correct');
+    }
+
+    // Zurücksetzen
+    function resetTask(id) {
+        const card = document.getElementById(id);
+        card.classList.remove('correct', 'incorrect');
+        
+        // Selects
+        const sel = card.querySelector('select');
+        if(sel) sel.value = "";
+
+        // Radios
+        const radios = card.querySelectorAll('input[type="radio"]');
+        radios.forEach(r => r.checked = false);
+
+        // Drag & Drop
+        const pool = card.querySelector('.drag-pool');
+        const zones = card.querySelectorAll('.dropzone');
+        zones.forEach(z => {
+            z.style.borderColor = '';
+            while(z.firstChild) pool.appendChild(z.firstChild);
+        });
+    }
+</script>
+
+</body>
+</html>
